@@ -1,0 +1,14 @@
+{
+".url": {
+"SYNO.SDS.baiduapp": {
+"allUsers": true,
+"icon": "PACKAGE_ICON.PNG", 
+"protocol": "http",
+"port":"8092",
+"texts": "texts",
+"title": "百度网盘",
+"type": "url",
+"url": "/"
+
+} }
+}

@@ -1,0 +1,29 @@
+# 本仓库所有内容最终都进 Linux 容器 / 群晖 DSM，脚本和配置一律 LF。
+# 在 Windows 上开发时，无论本机 core.autocrlf 怎么设，检出都保持 LF，
+# 避免 .sh 带上 CRLF 后在容器里报 "bad interpreter"。
+* text=auto eol=lf
+
+# 关键文本文件显式声明，防止被启发式误判
+*.sh        text eol=lf
+Dockerfile  text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.conf      text eol=lf
+*.html      text eol=lf
+*.css       text eol=lf
+*.js        text eol=lf
+*.svg       text eol=lf
+*.txt       text eol=lf
+config      text eol=lf
+
+# 二进制：不做换行符转换，不做文本 diff
+*.jar   binary
+*.so    binary
+*.db    binary
+*.png   binary
+*.PNG   binary
+*.ico   binary
+*.ttf   binary
+*.woff  binary
+*.woff2 binary
+baiduapp/linux_amd64/** binary

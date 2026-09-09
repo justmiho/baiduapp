@@ -1,0 +1,50 @@
+# 群晖配置文件
+server:
+  port: 8090
+
+file_listener:
+  path: ${ENV_FILE_PATH:/sdkpath}
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  typeAliasesPackage: com.isoft.nasfilemanage.model
+  global-config:
+    #数据库相关配置
+    db-config:
+      #主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID", ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: AUTO
+      #字段策略 IGNORED:"忽略判断",NOT_NULL:"非 NULL 判断"),NOT_EMPTY:"非空判断"
+      field-strategy: NOT_NULL
+      #驼峰下划线转换
+      column-underline: true
+      logic-delete-value: -1
+      logic-not-delete-value: 0
+    banner: false
+
+spring:
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    schema: classpath:db/init_copy.sql
+    data: classpath:db/init.sql
+    initialization-mode: always
+    continue-on-error: true
+    #    url: jdbc:sqlite:src/main/resources/db/nas-file-manage.db
+    url: jdbc:sqlite:data/nas-file-manage.db?date_string_format=yyyy-MM-dd HH:mm:ss
+
+# 日志配置
+logging:
+  filePath: /tmp/nas-file/logs
+
+
+baidu:
+  appKey: WplE8aHwztHpj6XmhZ83OMIMVtHO5lcR
+  appId: 36443277
+  redirectUri: oob
+  secretKey: GOjVzhynW9IePwWwykVIakql3YLMAqc0
+  deviceType: 202307211140578992
+#  directory1,directory2 为获取默认下载地址，不同厂商地址不同；: /volume1/docker;
+  directory1: volume
+  directory2: docker
+
+nas:
+  nasId: 30

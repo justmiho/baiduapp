@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+
+  myapp:
+
+    build: /var/packages/baiduapp/target/app/baiduapp
+
+    image: baiduapp:1.0
+
+    # container_name 必须与已发布版本(72015)一致 = baiduapp:
+    # CM 的 docker-project 升级走"update project", 按容器名跟踪 profile。若新版改了
+    # 容器名(如去掉此行变成 baiduapp-myapp-1), CM 无法把旧 profile 迁到新容器 →
+    # 报 "container's profile should exist!"、旧容器被改名 <hash>_baiduapp、项目注册失败、
+    # synopkg start_failed(但旧容器仍在跑)。保持同名 CM 升级时才能原地重建同一容器。
+    container_name: baiduapp
+
+    # DSM 7.3: 共享通过统一入口 all_shares 整体挂入(静态写死, CM 以 root 建容器,
+    # 套件脚本全程不碰 docker, 无需 root 提权)。
+    # /sdkpath/volumeN/<共享> 由容器内 endpoint.sh 依 /data/share_volumes.map 建软链还原。
+    # 普通 bind 即可: Docker 默认 bind 是递归的(rprivate), all_shares 下各共享子挂载
+    # 会一并带进容器; 切勿写 propagation: rslave, 它要求源先为 shared/slave 会导致安装失败。
+    volumes:
+      - /var/packages/baiduapp/target/app/appLogs:/tmp/nas-file/logs
+      - /var/packages/baiduapp/target/app/data:/data
+      - /var/packages/ContainerManager/var/all_shares:/all_shares
+
+    networks:
+      - baiduapp
+
+    environment:
+      - API_HOST=127.0.0.1:8091
+
+    ports:
+      - "8092:8080/tcp"
+    user: 0:0
+    restart: always
+networks:
+  baiduapp:
+    driver: bridge
