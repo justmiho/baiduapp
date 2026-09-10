@@ -10,7 +10,14 @@
 | `/all_shares` | 网盘上传 / 下载的根目录。容器启动时会把其下每个子目录软链到 `/sdkpath/volumeN/<子目录名>` | 必须 |
 | `/tmp/nas-file/logs` | 应用日志 | 可选 |
 
-Web 页面由容器内 `8080` 端口提供，只需映射这一个端口。
+Web 页面由容器内 nginx 提供，默认监听 `8080`，只需映射这一个端口。
+
+### 环境变量
+
+| 变量 | 默认值 | 说明 |
+|---|---|---|
+| `WEB_PORT` | `8080` | nginx 监听端口。bridge 模式下用 `ports` 映射即可，无需修改；host 模式下没有端口映射，可通过它直接指定宿主机上的访问端口 |
+| `API_HOST` | `127.0.0.1:8091` | 后端内部地址，保持默认 |
 
 ### `share_volumes.map`（可选）
 
@@ -35,7 +42,7 @@ docker run -d \
   -v /path/to/shares:/all_shares \
   -v /path/to/logs:/tmp/nas-file/logs \
   --user 0:0 \
-  justmiho/baiduapp:latest
+  justmiho/baiduapp:1.0.15-73009
 ```
 
 浏览器打开 `http://<宿主机IP>:8092`，扫码登录百度网盘即可。
@@ -45,7 +52,7 @@ docker run -d \
 ```yaml
 services:
   baiduapp:
-    image: justmiho/baiduapp:latest
+    image: justmiho/baiduapp:1.0.15-73009
     container_name: baiduapp
     restart: always
     user: "0:0"
@@ -62,6 +69,29 @@ services:
 ```bash
 docker compose up -d
 ```
+
+### host 网络模式
+
+host 模式下 `ports` 不生效，容器直接占用宿主机端口。用 `WEB_PORT` 指定访问端口即可：
+
+```yaml
+services:
+  baiduapp:
+    image: justmiho/baiduapp:1.0.15-73009
+    container_name: baiduapp
+    restart: always
+    user: "0:0"
+    network_mode: host
+    environment:
+      - WEB_PORT=8092
+      - API_HOST=127.0.0.1:8091
+    volumes:
+      - ./data:/data
+      - ./logs:/tmp/nas-file/logs
+      - /volume1:/all_shares
+```
+
+注意 host 模式下容器内的 `8090`、`8091` 也会直接占用宿主机端口，请确认没有冲突。
 
 ## 自行构建
 

@@ -33,6 +33,11 @@ setup_sdkpath_links() {
 }
 setup_sdkpath_links
 
+# Web 端口可配置: host 网络模式下没有端口映射, 通过 WEB_PORT 指定 nginx 监听端口, 默认 8080
+WEB_PORT="${WEB_PORT:-8080}"
+sed -i "s/listen [0-9]*;/listen ${WEB_PORT};/" /etc/nginx/nginx.conf
+echo "nginx 监听端口: ${WEB_PORT}"
+
 java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Djava.security.egd=file:/dev/./urandom -jar /app.jar --spring.config.additional-location=/application.yml &
 nginx -g "daemon on;"
 

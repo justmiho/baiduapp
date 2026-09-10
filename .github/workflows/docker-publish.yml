@@ -4,9 +4,6 @@ on:
   push:
     branches: [main]
     tags: ['v*']
-    paths:
-      - 'baiduapp/**'
-      - '.github/workflows/docker-publish.yml'
   workflow_dispatch:
 
 env:
@@ -33,17 +30,16 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # 自动生成镜像 tag:
-      #   push main       -> latest, sha-<短提交号>
-      #   push tag v1.2.3 -> 1.2.3, 1.2, sha-<短提交号>
+      #   push main              -> latest, sha-<短提交号>
+      #   push tag v1.0.15-73009 -> 1.0.15-73009, latest, sha-<短提交号>
       - name: Extract image metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE_NAME }}
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=match,pattern=v(.*),group=1
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') }}
             type=sha,prefix=sha-,format=short
 
       - name: Build and push

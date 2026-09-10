@@ -5,7 +5,7 @@ services:
 
     build: /var/packages/baiduapp/target/app/baiduapp
 
-    image: baiduapp:1.0
+    image: baiduapp:1.0.15-73009
 
     # container_name 必须与已发布版本(72015)一致 = baiduapp:
     # CM 的 docker-project 升级走"update project", 按容器名跟踪 profile。若新版改了
