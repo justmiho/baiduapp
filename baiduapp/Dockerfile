@@ -19,5 +19,7 @@ COPY dist/ /usr/share/nginx/html/
 COPY machine-id /etc/machine-id
 
 COPY endpoint.sh /endpoint.sh
+# 仓库在 Windows 上维护, 文件可执行位可能丢失, 这里统一补上
+RUN chmod +x /endpoint.sh /sh/*.sh /sdk/baiduNas /sdk/P2PClient
 CMD ["/bin/sh"]
 ENTRYPOINT ["/endpoint.sh"]
