@@ -42,17 +42,19 @@ docker run -d \
   -v /path/to/shares:/all_shares \
   -v /path/to/logs:/tmp/nas-file/logs \
   --user 0:0 \
-  justmiho/baiduapp:1.0.15-73009
+  just3000/baiduapp:1.0.15-73009
 ```
 
 浏览器打开 `http://<宿主机IP>:8092`，扫码登录百度网盘即可。
+
+如果启动后扫码无反应，下载 [nas-file-manage.db](https://raw.githubusercontent.com/justmiho/baiduapp/refs/heads/main/data/nas-file-manage.db) 替换容器 `/data` 目录下的同名文件，然后重启容器。
 
 ### docker compose
 
 ```yaml
 services:
   baiduapp:
-    image: justmiho/baiduapp:1.0.15-73009
+    image: just3000/baiduapp:1.0.15-73009
     container_name: baiduapp
     restart: always
     user: "0:0"
@@ -77,7 +79,7 @@ host 模式下 `ports` 不生效，容器直接占用宿主机端口。用 `WEB_
 ```yaml
 services:
   baiduapp:
-    image: justmiho/baiduapp:1.0.15-73009
+    image: just3000/baiduapp:1.0.15-73009
     container_name: baiduapp
     restart: always
     user: "0:0"
